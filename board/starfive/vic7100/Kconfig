@@ -26,9 +26,9 @@ config ENV_OFFSET
 	default 0x140000 if ENV_IS_IN_SPI_FLASH
 
 config SYS_TEXT_BASE
-	default 0x80200000 if SPL
+	default 0x80020000 if SPL
 	default 0x80000000 if !RISCV_SMODE
-	default 0x80200000 if RISCV_SMODE
+	default 0x80020000 if RISCV_SMODE
 
 config SPL_TEXT_BASE
 	default 0x08000000
