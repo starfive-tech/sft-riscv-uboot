@@ -455,15 +455,22 @@
 			clocks = <&dwmmc_biuclk>;
 			clock-names = "biu";
 			clock-frequency = <100000000>;
-			max-frequency = <10000000>;
+			max-frequency = <26000000>;
 			fifo-depth = <32>;
 			card-detect-delay = <300>;
 			fifo-watermark-aligned;
 			data-addr = <0>;
 			bus-width = <4>;
 			cap-sd-highspeed;
-			broken-cd;
-			no-sdio;
+			/*broken-cd;*/
+			cap-sdio-irq;
+			cap-mmc-hw-reset;
+			non-removable;
+			enable-sdio-wakeup;
+			keep-power-in-suspend;
+			/*cap-power-off-card;*/
+			cap-mmc-highspeed;
+			/*fixed-emmc-driver-type;*/
 			post-power-on-delay-ms = <200>;
 		};
 	};

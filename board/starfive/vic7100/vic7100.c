@@ -386,37 +386,37 @@ INIT_FUNC_DEF(sgdma2p)
 
 INIT_FUNC_DEF(sdio0)
 {
-	SET_GPIO_sdio0_pad_card_detect_n(26);
-	SET_GPIO_26_doen_HIGH;
+    _ENABLE_CLOCK_clk_sdio0_ahb_;
+    _ENABLE_CLOCK_clk_sdio0_cclkint_;
 
 	SET_GPIO_33_dout_sdio0_pad_cclk_out;
 	SET_GPIO_33_doen_LOW;
 
-	SET_GPIO_34_doen_reverse_(1);
-	SET_GPIO_34_doen_sdio0_pad_ccmd_oe;
-	SET_GPIO_34_dout_sdio0_pad_ccmd_out;
-	SET_GPIO_sdio0_pad_ccmd_in(34);
+	SET_GPIO_29_doen_reverse_(1);
+	SET_GPIO_29_doen_sdio0_pad_ccmd_oe;
+	SET_GPIO_29_dout_sdio0_pad_ccmd_out;
+	SET_GPIO_sdio0_pad_ccmd_in(29);
 
-	SET_GPIO_32_doen_reverse_(1);
-	SET_GPIO_31_doen_reverse_(1);
-	SET_GPIO_30_doen_reverse_(1);
 	SET_GPIO_36_doen_reverse_(1);
+	SET_GPIO_30_doen_reverse_(1);
+	SET_GPIO_34_doen_reverse_(1);
+	SET_GPIO_31_doen_reverse_(1);
 
-	SET_GPIO_32_doen_sdio0_pad_cdata_oe_bit0;
-	SET_GPIO_32_dout_sdio0_pad_cdata_out_bit0;
-	SET_GPIO_sdio0_pad_cdata_in_bit0(32);
+	SET_GPIO_36_doen_sdio0_pad_cdata_oe_bit0;
+	SET_GPIO_36_dout_sdio0_pad_cdata_out_bit0;
+	SET_GPIO_sdio0_pad_cdata_in_bit0(36);
 
-	SET_GPIO_31_doen_sdio0_pad_cdata_oe_bit1;
-	SET_GPIO_31_dout_sdio0_pad_cdata_out_bit1;
-	SET_GPIO_sdio0_pad_cdata_in_bit1(31);
+	SET_GPIO_30_doen_sdio0_pad_cdata_oe_bit1;
+	SET_GPIO_30_dout_sdio0_pad_cdata_out_bit1;
+	SET_GPIO_sdio0_pad_cdata_in_bit1(30);
 
-	SET_GPIO_30_doen_sdio0_pad_cdata_oe_bit2;
-	SET_GPIO_30_dout_sdio0_pad_cdata_out_bit2;
-	SET_GPIO_sdio0_pad_cdata_in_bit2(30);
+	SET_GPIO_34_doen_sdio0_pad_cdata_oe_bit2;
+	SET_GPIO_34_dout_sdio0_pad_cdata_out_bit2;
+	SET_GPIO_sdio0_pad_cdata_in_bit2(34);
 
-	SET_GPIO_36_doen_sdio0_pad_cdata_oe_bit3;
-	SET_GPIO_36_dout_sdio0_pad_cdata_out_bit3;
-	SET_GPIO_sdio0_pad_cdata_in_bit3(36);
+	SET_GPIO_31_doen_sdio0_pad_cdata_oe_bit3;
+	SET_GPIO_31_dout_sdio0_pad_cdata_out_bit3;
+	SET_GPIO_sdio0_pad_cdata_in_bit3(31);
 }
 
 INIT_FUNC_DEF(sdio1)
