@@ -394,6 +394,14 @@ static int m88e151x_config(struct phy_device *phydev)
 		phy_write(phydev, MDIO_DEVAD_NONE, MII_MARVELL_PHY_PAGE, 0);
 	}
 
+#if CONFIG_IS_ENABLED(TARGET_STARFIVE_VIC7100)
+	/*set led*/
+	/* LED[1]:0001 (Link, Blink - Activity) */
+	/* LED[0]:0100 (Blink - Activity) */
+	m88e1xxx_phy_extwrite(phydev, MDIO_DEVAD_NONE, 3,
+			       MIIM_88E151x_LED_FUNC_CTRL, 0x1014);
+#endif
+
 	/* soft reset */
 	phy_reset(phydev);
 

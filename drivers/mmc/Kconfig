@@ -236,6 +236,15 @@ config MMC_DW_K3
 	  Synopsys DesignWare Memory Card Interface driver. Select this option
 	  for platforms based on Hisilicon K3 SoC's.
 
+config STARFIVE_VIC_DWMMC
+	bool "VIC specific extensions for Synopsys DW Memory Card Interface"
+	depends on MMC_DW
+	default y if TARGET_STARFIVE_VIC7100
+	help
+	  This selects support for StarFive VIC SoC specific extensions to the
+	  Synopsys DesignWare Memory Card Interface driver. Select this option
+	  for platforms based on StarFive VIC SoC's.
+
 config MMC_DW_ROCKCHIP
 	bool "Rockchip SD/MMC controller support"
 	depends on DM_MMC && OF_CONTROL

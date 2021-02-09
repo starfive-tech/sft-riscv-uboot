@@ -30,6 +30,29 @@
 #include <power/regulator.h>
 #include "designware.h"
 
+#if CONFIG_IS_ENABLED(TARGET_STARFIVE_VIC7100)
+#include <asm/arch/clkgen_ctrl_macro.h>
+#endif
+
+#if CONFIG_IS_ENABLED(ETH_DESIGNWARE_PRESETED_BUFF)
+#define TX_MAC_DES	preseted_tx_mac_descrtable
+#define RX_MAC_DES	preseted_rx_mac_descrtable
+#define TX_BUFF	preseted_txbuffs
+#define RX_BUFF	preseted_rxbuffs
+struct dmamacdescr *preseted_tx_mac_descrtable =
+	(struct dmamacdescr *)CONFIG_ETH_DESIGNWARE_PRESETED_TX_MAC_DES_BASE;
+struct dmamacdescr *preseted_rx_mac_descrtable =
+	(struct dmamacdescr *)CONFIG_ETH_DESIGNWARE_PRESETED_RX_MAC_DES_BASE;
+char *preseted_txbuffs = (char *)CONFIG_ETH_DESIGNWARE_PRESETED_TXBUFF_BASE;
+char *preseted_rxbuffs = (char *)CONFIG_ETH_DESIGNWARE_PRESETED_RXBUFF_BASE;
+#else
+#define TX_MAC_DES	priv->tx_mac_descrtable
+#define RX_MAC_DES	priv->rx_mac_descrtable
+#define TX_BUFF	priv->txbuffs
+#define RX_BUFF	priv->rxbuffs
+#endif
+
+
 static int dw_mdio_read(struct mii_dev *bus, int addr, int devad, int reg)
 {
 #ifdef CONFIG_DM_ETH
@@ -38,7 +61,7 @@ static int dw_mdio_read(struct mii_dev *bus, int addr, int devad, int reg)
 #else
 	struct eth_mac_regs *mac_p = bus->priv;
 #endif
-	ulong start;
+	unsigned int start;
 	u16 miiaddr;
 	int timeout = CONFIG_MDIO_TIMEOUT;
 
@@ -66,7 +89,7 @@ static int dw_mdio_write(struct mii_dev *bus, int addr, int devad, int reg,
 #else
 	struct eth_mac_regs *mac_p = bus->priv;
 #endif
-	ulong start;
+	unsigned int start;
 	u16 miiaddr;
 	int ret = -ETIMEDOUT, timeout = CONFIG_MDIO_TIMEOUT;
 
@@ -146,15 +169,15 @@ static int dw_mdio_init(const char *name, void *priv)
 static void tx_descs_init(struct dw_eth_dev *priv)
 {
 	struct eth_dma_regs *dma_p = priv->dma_regs_p;
-	struct dmamacdescr *desc_table_p = &priv->tx_mac_descrtable[0];
-	char *txbuffs = &priv->txbuffs[0];
+	struct dmamacdescr *desc_table_p = &TX_MAC_DES[0];
+	char *txbuffs = &TX_BUFF[0];
 	struct dmamacdescr *desc_p;
 	u32 idx;
 
 	for (idx = 0; idx < CONFIG_TX_DESCR_NUM; idx++) {
 		desc_p = &desc_table_p[idx];
-		desc_p->dmamac_addr = (ulong)&txbuffs[idx * CONFIG_ETH_BUFSIZE];
-		desc_p->dmamac_next = (ulong)&desc_table_p[idx + 1];
+		desc_p->dmamac_addr = (unsigned int)&txbuffs[idx * CONFIG_ETH_BUFSIZE];
+		desc_p->dmamac_next = (unsigned int)&desc_table_p[idx + 1];
 
 #if defined(CONFIG_DW_ALTDESCRIPTOR)
 		desc_p->txrx_status &= ~(DESC_TXSTS_TXINT | DESC_TXSTS_TXLAST |
@@ -172,22 +195,22 @@ static void tx_descs_init(struct dw_eth_dev *priv)
 	}
 
 	/* Correcting the last pointer of the chain */
-	desc_p->dmamac_next = (ulong)&desc_table_p[0];
+	desc_p->dmamac_next = (unsigned int)&desc_table_p[0];
 
 	/* Flush all Tx buffer descriptors at once */
-	flush_dcache_range((ulong)priv->tx_mac_descrtable,
-			   (ulong)priv->tx_mac_descrtable +
-			   sizeof(priv->tx_mac_descrtable));
+	flush_dcache_range((unsigned int)TX_MAC_DES,
+			   (unsigned int)TX_MAC_DES +
+			   sizeof(struct dmamacdescr) * CONFIG_TX_DESCR_NUM);
 
-	writel((ulong)&desc_table_p[0], &dma_p->txdesclistaddr);
+	writel((unsigned int)&desc_table_p[0], &dma_p->txdesclistaddr);
 	priv->tx_currdescnum = 0;
 }
 
 static void rx_descs_init(struct dw_eth_dev *priv)
 {
 	struct eth_dma_regs *dma_p = priv->dma_regs_p;
-	struct dmamacdescr *desc_table_p = &priv->rx_mac_descrtable[0];
-	char *rxbuffs = &priv->rxbuffs[0];
+	struct dmamacdescr *desc_table_p = &RX_MAC_DES[0];
+	char *rxbuffs = &RX_BUFF[0];
 	struct dmamacdescr *desc_p;
 	u32 idx;
 
@@ -197,12 +220,12 @@ static void rx_descs_init(struct dw_eth_dev *priv)
 	 * Otherwise there's a chance to get some of them flushed in RAM when
 	 * GMAC is already pushing data to RAM via DMA. This way incoming from
 	 * GMAC data will be corrupted. */
-	flush_dcache_range((ulong)rxbuffs, (ulong)rxbuffs + RX_TOTAL_BUFSIZE);
+	flush_dcache_range((unsigned int)rxbuffs, (unsigned int)rxbuffs + RX_TOTAL_BUFSIZE);
 
 	for (idx = 0; idx < CONFIG_RX_DESCR_NUM; idx++) {
 		desc_p = &desc_table_p[idx];
-		desc_p->dmamac_addr = (ulong)&rxbuffs[idx * CONFIG_ETH_BUFSIZE];
-		desc_p->dmamac_next = (ulong)&desc_table_p[idx + 1];
+		desc_p->dmamac_addr = (unsigned int)&rxbuffs[idx * CONFIG_ETH_BUFSIZE];
+		desc_p->dmamac_next = (unsigned int)&desc_table_p[idx + 1];
 
 		desc_p->dmamac_cntl =
 			(MAC_MAX_FRAME_SZ & DESC_RXCTRL_SIZE1MASK) |
@@ -212,14 +235,14 @@ static void rx_descs_init(struct dw_eth_dev *priv)
 	}
 
 	/* Correcting the last pointer of the chain */
-	desc_p->dmamac_next = (ulong)&desc_table_p[0];
+	desc_p->dmamac_next = (unsigned int)&desc_table_p[0];
 
 	/* Flush all Rx buffer descriptors at once */
-	flush_dcache_range((ulong)priv->rx_mac_descrtable,
-			   (ulong)priv->rx_mac_descrtable +
-			   sizeof(priv->rx_mac_descrtable));
+	flush_dcache_range((unsigned int)RX_MAC_DES,
+			   (unsigned int)RX_MAC_DES +
+			   sizeof(struct dmamacdescr) * CONFIG_RX_DESCR_NUM);
 
-	writel((ulong)&desc_table_p[0], &dma_p->rxdesclistaddr);
+	writel((unsigned int)&desc_table_p[0], &dma_p->rxdesclistaddr);
 	priv->rx_currdescnum = 0;
 }
 
@@ -258,6 +281,25 @@ static int dw_adjust_link(struct dw_eth_dev *priv, struct eth_mac_regs *mac_p,
 
 	if (phydev->duplex)
 		conf |= FULLDPLXMODE;
+
+#if CONFIG_IS_ENABLED(TARGET_STARFIVE_VIC7100)
+	switch (phydev->speed) {
+		case 1000:
+			_DIVIDE_CLOCK_clk_gmac_gtxclk_(4);
+			break;
+
+		case 100:
+			_DIVIDE_CLOCK_clk_gmac_gtxclk_(20);
+			break;
+
+		case 10:
+			_DIVIDE_CLOCK_clk_gmac_gtxclk_(200);
+			break;
+
+		default:
+			break;
+	}
+#endif
 
 	writel(conf, &mac_p->conf);
 
@@ -365,12 +407,12 @@ static int _dw_eth_send(struct dw_eth_dev *priv, void *packet, int length)
 {
 	struct eth_dma_regs *dma_p = priv->dma_regs_p;
 	u32 desc_num = priv->tx_currdescnum;
-	struct dmamacdescr *desc_p = &priv->tx_mac_descrtable[desc_num];
-	ulong desc_start = (ulong)desc_p;
-	ulong desc_end = desc_start +
+	struct dmamacdescr *desc_p = &TX_MAC_DES[desc_num];
+	unsigned int desc_start = (unsigned int)desc_p;
+	unsigned int desc_end = desc_start +
 		roundup(sizeof(*desc_p), ARCH_DMA_MINALIGN);
-	ulong data_start = desc_p->dmamac_addr;
-	ulong data_end = data_start + roundup(length, ARCH_DMA_MINALIGN);
+	unsigned int data_start = desc_p->dmamac_addr;
+	unsigned int data_end = data_start + roundup(length, ARCH_DMA_MINALIGN);
 	/*
 	 * Strictly we only need to invalidate the "txrx_status" field
 	 * for the following check, but on some platforms we cannot
@@ -431,13 +473,13 @@ static int _dw_eth_send(struct dw_eth_dev *priv, void *packet, int length)
 static int _dw_eth_recv(struct dw_eth_dev *priv, uchar **packetp)
 {
 	u32 status, desc_num = priv->rx_currdescnum;
-	struct dmamacdescr *desc_p = &priv->rx_mac_descrtable[desc_num];
+	struct dmamacdescr *desc_p = &RX_MAC_DES[desc_num];
 	int length = -EAGAIN;
-	ulong desc_start = (ulong)desc_p;
-	ulong desc_end = desc_start +
+	unsigned int desc_start = (unsigned int)desc_p;
+	unsigned int desc_end = desc_start +
 		roundup(sizeof(*desc_p), ARCH_DMA_MINALIGN);
-	ulong data_start = desc_p->dmamac_addr;
-	ulong data_end;
+	unsigned int data_start = desc_p->dmamac_addr;
+	unsigned int data_end;
 
 	/* Invalidate entire buffer descriptor */
 	invalidate_dcache_range(desc_start, desc_end);
@@ -453,7 +495,7 @@ static int _dw_eth_recv(struct dw_eth_dev *priv, uchar **packetp)
 		/* Invalidate received data */
 		data_end = data_start + roundup(length, ARCH_DMA_MINALIGN);
 		invalidate_dcache_range(data_start, data_end);
-		*packetp = (uchar *)(ulong)desc_p->dmamac_addr;
+		*packetp = (uchar *)(unsigned int)desc_p->dmamac_addr;
 	}
 
 	return length;
@@ -462,9 +504,9 @@ static int _dw_eth_recv(struct dw_eth_dev *priv, uchar **packetp)
 static int _dw_free_pkt(struct dw_eth_dev *priv)
 {
 	u32 desc_num = priv->rx_currdescnum;
-	struct dmamacdescr *desc_p = &priv->rx_mac_descrtable[desc_num];
-	ulong desc_start = (ulong)desc_p;
-	ulong desc_end = desc_start +
+	struct dmamacdescr *desc_p = &RX_MAC_DES[desc_num];
+	unsigned int desc_start = (unsigned int)desc_p;
+	unsigned int desc_end = desc_start +
 		roundup(sizeof(*desc_p), ARCH_DMA_MINALIGN);
 
 	/*
@@ -553,7 +595,7 @@ static int dw_write_hwaddr(struct eth_device *dev)
 	return _dw_write_hwaddr(dev->priv, dev->enetaddr);
 }
 
-int designware_initialize(ulong base_addr, u32 interface)
+int designware_initialize(unsigned int base_addr, u32 interface)
 {
 	struct eth_device *dev;
 	struct dw_eth_dev *priv;
@@ -573,10 +615,12 @@ int designware_initialize(ulong base_addr, u32 interface)
 		return -ENOMEM;
 	}
 
+#if !CONFIG_IS_ENABLED(TARGET_STARFIVE_VIC7100)
 	if ((phys_addr_t)priv + sizeof(*priv) > (1ULL << 32)) {
 		printf("designware: buffers are outside DMA memory\n");
 		return -EINVAL;
 	}
+#endif
 
 	memset(dev, 0, sizeof(struct eth_device));
 	memset(priv, 0, sizeof(struct dw_eth_dev));
@@ -681,7 +725,7 @@ int designware_eth_probe(struct udevice *dev)
 	struct eth_pdata *pdata = dev_get_platdata(dev);
 	struct dw_eth_dev *priv = dev_get_priv(dev);
 	u32 iobase = pdata->iobase;
-	ulong ioaddr;
+	unsigned int ioaddr;
 	int ret, err;
 	struct reset_ctl_bulk reset_bulk;
 #ifdef CONFIG_CLK

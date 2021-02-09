@@ -94,6 +94,19 @@ static void boot_jump_linux(bootm_headers_t *images, int flag)
 
 	announce_and_cleanup(fake);
 
+#if CONFIG_IS_ENABLED(STARFIVE_VIC7100_BOOTHACK)
+	/*send ipi to other hart*/
+	*((volatile uint32_t *)(0x2000004)) = 0x1;
+	*((volatile uint32_t *)(0x2000008)) = 0x1;
+	*((volatile uint32_t *)(0x200000c)) = 0x1;
+	*((volatile uint32_t *)(0x2000010)) = 0x1;
+
+	asm volatile ("mv a1, %1\n\t"
+			"csrr a0, mhartid\n\t"
+			"mv t4, %0\n\t"
+			"jr t4\n\t"::"r" (kernel),"r"((unsigned long)images->ft_addr));
+#endif
+
 	if (!fake) {
 		if (IMAGE_ENABLE_OF_LIBFDT && images->ft_len) {
 #ifdef CONFIG_SMP

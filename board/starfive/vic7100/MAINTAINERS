@@ -1,0 +1,7 @@
+STARFIVE VIC7100 EVB BOARD
+M: startfive
+S:	Maintained
+F:	arch/riscv/include/asm/arch-vic7100/
+F:	board/starfive/vic7100/
+F:	include/configs/starfive-vic7100.h
+F:	configs/starfive_vic_evb_mmode_defconfig

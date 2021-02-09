@@ -784,6 +784,13 @@ config SIFIVE_SERIAL
 	help
 	  This driver supports the SiFive UART. If unsure say N.
 
+config STARFIVE_SERIAL
+	bool "StarFive UART support"
+#	depends on DM_SERIAL
+        default y if TARGET_STARFIVE_VIC7100
+	help
+	This driver supports the StarFive UART [2/3]. If unsure say N.
+
 config STI_ASC_SERIAL
 	bool "STMicroelectronics on-chip UART"
 	depends on DM_SERIAL && ARCH_STI

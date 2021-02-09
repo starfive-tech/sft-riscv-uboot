@@ -20,7 +20,8 @@
 #define TX_TOTAL_BUFSIZE	(CONFIG_ETH_BUFSIZE * CONFIG_TX_DESCR_NUM)
 #define RX_TOTAL_BUFSIZE	(CONFIG_ETH_BUFSIZE * CONFIG_RX_DESCR_NUM)
 
-#define CONFIG_MACRESET_TIMEOUT	(3 * CONFIG_SYS_HZ)
+//#define CONFIG_MACRESET_TIMEOUT	(3 * CONFIG_SYS_HZ)
+#define CONFIG_MACRESET_TIMEOUT	(3 * CONFIG_SYS_HZ * 10000)
 #define CONFIG_MDIO_TIMEOUT	(3 * CONFIG_SYS_HZ)
 
 struct eth_mac_regs {
@@ -46,6 +47,7 @@ struct eth_mac_regs {
 #define FES_100			(1 << 14)
 #define DISABLERXOWN		(1 << 13)
 #define FULLDPLXMODE		(1 << 11)
+#define LINK_UP		(1 << 8)
 #define RXENABLE		(1 << 2)
 #define TXENABLE		(1 << 3)
 

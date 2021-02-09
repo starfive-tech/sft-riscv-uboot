@@ -680,6 +680,10 @@ static struct phy_device *phy_device_create(struct mii_dev *bus, int addr,
 
 	dev->autoneg = AUTONEG_ENABLE;
 
+#if CONFIG_IS_ENABLED(TARGET_STARFIVE_VIC7100)
+	dev->duplex = DUPLEX_FULL;
+#endif
+
 	dev->addr = addr;
 	dev->phy_id = phy_id;
 	dev->is_c45 = is_c45;

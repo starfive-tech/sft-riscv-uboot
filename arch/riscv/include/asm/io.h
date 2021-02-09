@@ -68,6 +68,97 @@ static inline phys_addr_t map_to_sysmem(const void *ptr)
 #define __iormb()	rmb()
 #define __iowmb()	wmb()
 
+#if defined(CONFIG_TARGET_STARFIVE_VIC7100)
+#define inpw(port)				(*((volatile uint*) (port)))
+#define outpw(port, val)		(*((volatile uint*) (port)) = ((uint) (val)))
+
+#define MA_OUTW( io, val )\
+{\
+	outpw( io, val );\
+}
+
+#define MA_INW( io )		(uint)inpw( io )
+
+// for cadence_qspi_apb.c
+#define memset_io(c, v, l)		memset((c), (v), (l))
+#define memcpy_fromio(a, c, l)	memcpy((a), (c), (l))
+#define memcpy_toio(c, a, l)	memcpy((c), (a), (l))
+
+static inline void writeb_raw(u8 val, volatile void *addr)
+{
+	__iowmb();
+
+	asm volatile("sb %0,0(%1)"::"r"(val),"r"(addr));
+}
+
+static inline void writew_raw(u16 val, volatile void  *addr)
+{
+	__iowmb();
+
+	asm volatile("sh %0,0(%1)"::"r"(val),"r"(addr));
+}
+
+static inline void writel_raw(u32 val, volatile void *addr)
+{
+	__iowmb();
+
+	asm volatile("sw %0,0(%1)"::"r"(val),"r"(addr));
+}
+
+static inline void writeq_raw(u64 val, volatile void  *addr)
+{
+	__iowmb();
+
+	asm volatile("sd %0,0(%1)"::"r"(val),"r"(addr));
+}
+
+static inline u8 readb_raw(volatile void *addr)
+{
+	u8	val;
+
+	asm volatile("lb %0,0(%1)" : "=r" (val) : "r"(addr));
+	__iormb();
+	return val;
+}
+
+static inline u16 readw_raw(volatile void *addr)
+{
+	u16	val;
+
+	asm volatile("lh %0,0(%1)" : "=r" (val) : "r"(addr));
+	__iormb();
+	return val;
+}
+
+static inline u32 readl_raw(volatile void *addr)
+{
+	u32	val;
+
+	asm volatile("lw %0,0(%1)" : "=r" (val) : "r"(addr));
+	__iormb();
+	return val;
+}
+
+static inline u64 readq_raw(volatile void *addr)
+{
+	u64	val;
+
+	asm volatile("ld %0,0(%1)" : "=r" (val) : "r"(addr));
+	__iormb();
+	return val;
+}
+
+#define readb(addr) (readb_raw((volatile void *)(unsigned long)(addr)))
+#define readw(addr) (readw_raw((volatile void *)(unsigned long)(addr)))
+#define readl(addr) (readl_raw((volatile void *)(unsigned long)(addr)))
+#define readq(addr) (readq_raw((volatile void *)(unsigned long)(addr)))
+
+#define writeb(val,addr) (writeb_raw((val),(volatile void *)(unsigned long)(addr)))
+#define writew(val,addr) (writew_raw((val),(volatile void *)(unsigned long)(addr)))
+#define writel(val,addr) (writel_raw((val),(volatile void *)(unsigned long)(addr)))
+#define writeq(val,addr) (writeq_raw((val),(volatile void *)(unsigned long)(addr)))
+
+#else
 static inline void writeb(u8 val, volatile void __iomem *addr)
 {
 	__iowmb();
@@ -127,6 +218,7 @@ static inline u64 readq(const volatile void __iomem *addr)
 	__iormb();
 	return val;
 }
+#endif
 
 /*
  * The compiler seems to be incapable of optimising constants
