@@ -137,10 +137,10 @@ DECLARE_GLOBAL_DATA_PTR;
 
 //#define DW_UART_BASE_ADDR	 SIFIVE_UART_BASE_ADDR
 
-static u32 starfive_uart_read(u32 reg)
-{
-	return readl(SIFIVE_UART_BASE_ADDR + reg);
-}
+	static u32 starfive_uart_read(u32 reg)
+	{
+		return readl(SIFIVE_UART_BASE_ADDR + reg);
+	}
 
 static void starfive_uart_write(u32 ch,u32 reg)
 {
@@ -173,8 +173,8 @@ static void starfive_uart_setbrg(void)
 {
 	u64 baud_value;
 	/*
-	* BAUD_VALUE = (CLOCK / BAUD_RATE) - 1
-	*/
+	 * BAUD_VALUE = (CLOCK / BAUD_RATE) - 1
+	 */
 	baud_value = ((SIFIVE_PERIPH_CLK_FREQ / CONFIG_BAUDRATE)>>4);
 
 	starfive_uart_write(((baud_value>>0)&0xFF),SER_DLL);
@@ -206,7 +206,7 @@ static int starfive_uart_init(void)
 	vic_uart0_reset_clk_gpio_evb_enable;
 	vic_uart1_reset_clk_gpio_evb_enable;
 	//vic_uart2_reset_clk_gpio_evb_enable;
-	vic_uart3_reset_clk_gpio_evb_enable;
+	//vic_uart3_reset_clk_gpio_evb_enable;
 
 	if(databits >=5 && databits <=8) {
 		datab = (databits - 5);
@@ -234,8 +234,8 @@ static int starfive_uart_init(void)
 
 	//enable fifo and reset fifo, 1-byte int trig!
 	starfive_uart_write((RCVR_TRIG_1C|TXEM_TRIG_EMT|
-						 TXFIFO_RST|RXFIFO_RST|FIFO_ENA),
-						SER_FCR);
+			     TXFIFO_RST|RXFIFO_RST|FIFO_ENA),
+			    SER_FCR);
 
 	starfive_uart_write(mcr,SER_MCR);
 
@@ -252,15 +252,15 @@ static int starfive_uart_tstc(void)
 }
 
 static struct serial_device starfive_uart_drv = {
-	.name = "starfive_uart",
-	.start = starfive_uart_init,
-	.stop = NULL,
-	.setbrg = starfive_uart_setbrg,
-	.putc = starfive_uart_putc,
-	.puts = starfive_uart_puts,
-	.getc = starfive_uart_getc,
-	.tstc = starfive_uart_tstc,
-};
+	 .name = "starfive_uart",
+	 .start = starfive_uart_init,
+	 .stop = NULL,
+	 .setbrg = starfive_uart_setbrg,
+	 .putc = starfive_uart_putc,
+	 .puts = starfive_uart_puts,
+	 .getc = starfive_uart_getc,
+	 .tstc = starfive_uart_tstc,
+	};
 
 void starfive_uart_initialize(void)
 {

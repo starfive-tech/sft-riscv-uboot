@@ -17,11 +17,11 @@
 #define CONFIG_SPL_MAX_SIZE		0x00100000
 #define CONFIG_SPL_BSS_START_ADDR	0x85000000
 #define CONFIG_SPL_BSS_MAX_SIZE		0x00100000
-#define CONFIG_SYS_SPL_MALLOC_START	(CONFIG_SPL_BSS_START_ADDR + \
+#define CONFIG_SYS_SPL_MALLOC_START	(CONFIG_SPL_BSS_START_ADDR +	\
 					 CONFIG_SPL_BSS_MAX_SIZE)
 #define CONFIG_SYS_SPL_MALLOC_SIZE	0x00100000
 
-#define CONFIG_SPL_STACK	(0x08000000 + 0x001D0000 - \
+#define CONFIG_SPL_STACK	(0x08000000 + 0x001D0000 -	\
 				 GENERATED_GBL_DATA_SIZE)
 
 #endif
@@ -50,7 +50,7 @@
 /*
  * Print Buffer Size
  */
-#define CONFIG_SYS_PBSIZE	\
+#define CONFIG_SYS_PBSIZE					\
 	(CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
 
 /*
@@ -130,7 +130,7 @@
  */
 #ifdef CONFIG_CMD_NET
 #define CONFIG_DW_ALTDESCRIPTOR
-#define CONFIG_PHY_ADDR		0
+#define CONFIG_PHY_ADDR		7
 #define CONFIG_ARP_TIMEOUT	0x5000
 #define CONFIG_NETMASK		255.255.255.0
 #define CONFIG_IPADDR		192.168.120.200
@@ -144,8 +144,8 @@
 #define CONFIG_ENV_OVERWRITE
 
 /* HACK these should have '#if defined (stuff) around them like zynqp*/
-#define BOOT_TARGET_DEVICES(func) func(DHCP, dhcp, na) \
-				func(MMC, mmc, 0)
+#define BOOT_TARGET_DEVICES(func) func(DHCP, dhcp, na)	\
+		func(MMC, mmc, 0)
 
 #include <config_distro_bootcmd.h>
 
@@ -161,15 +161,15 @@
 #define SIFIVE_FDT_BASE		0x86000000
 #define KERNEL_LOAD_BASE		0x80700000
 
-#define	CONFIG_EXTRA_ENV_SETTINGS	\
-		"ip_dyn=yes\0" \
-		"uboot_version=" __stringify(PLAIN_VERSION) "\0" \
-		"mmcsetup=mmc part\0" \
-		"fdt_high=0xffffffffffffffff\0" \
-		"fdtsetup=fdt addr ${fdtcontroladdr}\0" \
-		"fatenv=setenv fileaddr a0000000; fatload mmc 0:1 ${fileaddr} u74_uEnv.txt;" \
-			"env import -t ${fileaddr} ${filesize}\0"		\
-		BOOTENV
+#define	CONFIG_EXTRA_ENV_SETTINGS					\
+	"ip_dyn=yes\0"							\
+	"uboot_version=" __stringify(PLAIN_VERSION) "\0"		\
+	"mmcsetup=mmc part\0"						\
+	"fdt_high=0xffffffffffffffff\0"					\
+	"fdtsetup=fdt addr ${fdtcontroladdr}\0"				\
+	"fatenv=setenv fileaddr a0000000; fatload mmc 0:1 ${fileaddr} u74_uEnv.txt;" \
+	"env import -t ${fileaddr} ${filesize}\0"			\
+	BOOTENV
 #endif
 
 #include <environment/distro/sf.h>
@@ -178,30 +178,30 @@
 #define TYPE_GUID_LOADER2	"2E54B353-1271-4842-806F-E436D6AF6985"
 #define TYPE_GUID_SYSTEM	"0FC63DAF-8483-4772-8E79-3D69D8477DE4"
 
-#define PARTS_DEFAULT \
+#define PARTS_DEFAULT							\
 	"name=loader1,start=17K,size=1M,type=${type_guid_gpt_loader1};" \
-	"name=loader2,size=4MB,type=${type_guid_gpt_loader2};" \
+	"name=loader2,size=4MB,type=${type_guid_gpt_loader2};"		\
 	"name=system,size=-,bootable,type=${type_guid_gpt_system};"
 
-#define CONFIG_EXTRA_ENV_SETTINGS \
-	"fdt_high=0xffffffffffffffff\0" \
-	"initrd_high=0xffffffffffffffff\0" \
-	"kernel_addr_r=0x84000000\0" \
-	"fdt_addr_r=0x88000000\0" \
-	"scriptaddr=0x88100000\0" \
-	"script_offset_f=0x1fff000\0" \
-	"script_size_f=0x1000\0" \
-	"pxefile_addr_r=0x88200000\0" \
-	"ramdisk_addr_r=0x88300000\0" \
+#define CONFIG_EXTRA_ENV_SETTINGS			\
+	"fdt_high=0xffffffffffffffff\0"			\
+	"initrd_high=0xffffffffffffffff\0"		\
+	"kernel_addr_r=0x84000000\0"			\
+	"fdt_addr_r=0x88000000\0"			\
+	"scriptaddr=0x88100000\0"			\
+	"script_offset_f=0x1fff000\0"			\
+	"script_size_f=0x1000\0"			\
+	"pxefile_addr_r=0x88200000\0"			\
+	"ramdisk_addr_r=0x88300000\0"			\
 	"type_guid_gpt_loader1=" TYPE_GUID_LOADER1 "\0" \
 	"type_guid_gpt_loader2=" TYPE_GUID_LOADER2 "\0" \
-	"type_guid_gpt_system=" TYPE_GUID_SYSTEM "\0" \
-	"partitions=" PARTS_DEFAULT "\0" \
-	BOOTENV \
+	"type_guid_gpt_system=" TYPE_GUID_SYSTEM "\0"	\
+	"partitions=" PARTS_DEFAULT "\0"		\
+	BOOTENV						\
 	BOOTENV_SF
 
-#define CONFIG_PREBOOT \
-	"setenv fdt_addr ${fdtcontroladdr};" \
+#define CONFIG_PREBOOT				\
+	"setenv fdt_addr ${fdtcontroladdr};"	\
 	"fdt addr ${fdtcontroladdr};"
 
 
@@ -221,8 +221,8 @@
 
 
 /*
-+ * QSPI support
-+ */
+  + * QSPI support
+  + */
 #ifdef CONFIG_OF_CONTROL		/* QSPI is controlled via DT */
 #define CONFIG_CQSPI_REF_CLK		(250000000)
 #endif
