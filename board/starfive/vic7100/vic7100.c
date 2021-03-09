@@ -823,8 +823,8 @@ int board_hw_init(void)
 	INIT_FUNC_CALL(nne50);
 	INIT_FUNC_CALL(vp6);
 	INIT_FUNC_CALL(noc);
-	INIT_FUNC_CALL(syscon);
-	INIT_FUNC_CALL(gpio);
+	//INIT_FUNC_CALL(syscon);
+	//INIT_FUNC_CALL(gpio);
 	INIT_FUNC_CALL(audio_subsys);
 	INIT_FUNC_CALL(i2srx_3ch);
 	INIT_FUNC_CALL(pdm);
@@ -836,7 +836,7 @@ int board_hw_init(void)
 	INIT_FUNC_CALL(i2sdac16k);
 	INIT_FUNC_CALL(usb);
 	INIT_FUNC_CALL(sgdma1p);
-	INIT_FUNC_CALL(qspi);
+	//INIT_FUNC_CALL(qspi);
 	INIT_FUNC_CALL(sgdma2p);
 	INIT_FUNC_CALL(sdio0);
 	INIT_FUNC_CALL(sdio1);
@@ -858,8 +858,8 @@ int board_hw_init(void)
 	//INIT_FUNC_CALL(uart3);
 	INIT_FUNC_CALL(i2c2);
 	INIT_FUNC_CALL(i2c3);
-	INIT_FUNC_CALL(wdt);
-	INIT_FUNC_CALL(ptc);
+	//INIT_FUNC_CALL(wdt);
+	//INIT_FUNC_CALL(ptc);
 
 	/** Video Output Subsystem **/
 	INIT_FUNC_CALL(vout_subsys);
