@@ -83,19 +83,19 @@ static int do_mem_md(struct cmd_tbl *cmdtp, int flag, int argc,
 		/* New command specified.  Check for a size specification.
 		 * Defaults to long if no or incorrect specification.
 		 */
-		if ((size = cmd_get_data_size(argv[0], 4)) < 0)
+		if ((size = cmd_get_data_size(argv[1], 4)) < 0)
 			return 1;
 
 		/* Address is specified since argc > 1
 		*/
-		addr = simple_strtoul(argv[1], NULL, 16);
+		addr = simple_strtoul(argv[2], NULL, 16);
 		addr += base_address;
 
 		/* If another parameter, it is the length to display.
 		 * Length is the number of objects, not number of bytes.
 		 */
-		if (argc > 2)
-			length = simple_strtoul(argv[2], NULL, 16);
+		if (argc > 3)
+			length = simple_strtoul(argv[3], NULL, 16);
 	}
 
 	bytes = size * length;
@@ -133,29 +133,29 @@ static int do_mem_mw(struct cmd_tbl *cmdtp, int flag, int argc,
 	void *buf, *start;
 	ulong bytes;
 
-	if ((argc < 3) || (argc > 4))
+	if ((argc < 3) || (argc > 5))
 		return CMD_RET_USAGE;
 
 	/* Check for size specification.
 	*/
-	if ((size = cmd_get_data_size(argv[0], 4)) < 1)
+	if ((size = cmd_get_data_size(argv[1], 4)) < 1)
 		return 1;
 
 	/* Address is specified since argc > 1
 	*/
-	addr = simple_strtoul(argv[1], NULL, 16);
+	addr = simple_strtoul(argv[2], NULL, 16);
 	addr += base_address;
 
 	/* Get the value to write.
 	*/
 	if (SUPPORT_64BIT_DATA)
-		writeval = simple_strtoull(argv[2], NULL, 16);
+	writeval = simple_strtoull(argv[3], NULL, 16);
 	else
-		writeval = simple_strtoul(argv[2], NULL, 16);
+	writeval = simple_strtoul(argv[3], NULL, 16);
 
 	/* Count ? */
 	if (argc == 4) {
-		count = simple_strtoul(argv[3], NULL, 16);
+		count = simple_strtoul(argv[4], NULL, 16);
 	} else {
 		count = 1;
 	}
@@ -246,24 +246,24 @@ static int do_mem_cmp(struct cmd_tbl *cmdtp, int flag, int argc,
 	const void *buf1, *buf2, *base;
 	ulong word1, word2;  /* 64-bit if SUPPORT_64BIT_DATA */
 
-	if (argc != 4)
+	if (argc != 5)
 		return CMD_RET_USAGE;
 
 	/* Check for size specification.
 	*/
-	if ((size = cmd_get_data_size(argv[0], 4)) < 0)
+	if ((size = cmd_get_data_size(argv[1], 4)) < 0)
 		return 1;
 	type = size == 8 ? "double word" :
 	       size == 4 ? "word" :
 	       size == 2 ? "halfword" : "byte";
 
-	addr1 = simple_strtoul(argv[1], NULL, 16);
+	addr1 = simple_strtoul(argv[2], NULL, 16);
 	addr1 += base_address;
 
-	addr2 = simple_strtoul(argv[2], NULL, 16);
+	addr2 = simple_strtoul(argv[3], NULL, 16);
 	addr2 += base_address;
 
-	count = simple_strtoul(argv[3], NULL, 16);
+	count = simple_strtoul(argv[4], NULL, 16);
 
 	bytes = size * count;
 	base = buf1 = map_sysmem(addr1, bytes);
@@ -312,21 +312,21 @@ static int do_mem_cp(struct cmd_tbl *cmdtp, int flag, int argc,
 	void	*src, *dst;
 	int	size;
 
-	if (argc != 4)
+	if (argc != 5)
 		return CMD_RET_USAGE;
 
 	/* Check for size specification.
 	*/
-	if ((size = cmd_get_data_size(argv[0], 4)) < 0)
+	if ((size = cmd_get_data_size(argv[1], 4)) < 0)
 		return 1;
 
-	addr = simple_strtoul(argv[1], NULL, 16);
+	addr = simple_strtoul(argv[2], NULL, 16);
 	addr += base_address;
 
-	dest = simple_strtoul(argv[2], NULL, 16);
+	dest = simple_strtoul(argv[3], NULL, 16);
 	dest += base_address;
 
-	count = simple_strtoul(argv[3], NULL, 16);
+	count = simple_strtoul(argv[4], NULL, 16);
 
 	if (count == 0) {
 		puts ("Zero length ???\n");
@@ -1155,7 +1155,7 @@ mod_mem(struct cmd_tbl *cmdtp, int incrflag, int flag, int argc,
 	int	nbytes, size;
 	void *ptr = NULL;
 
-	if (argc != 2)
+	if (argc != 3)
 		return CMD_RET_USAGE;
 
 	bootretry_reset_cmd_timeout();	/* got a good command to get here */
@@ -1169,12 +1169,12 @@ mod_mem(struct cmd_tbl *cmdtp, int incrflag, int flag, int argc,
 		/* New command specified.  Check for a size specification.
 		 * Defaults to long if no or incorrect specification.
 		 */
-		if ((size = cmd_get_data_size(argv[0], 4)) < 0)
+		if ((size = cmd_get_data_size(argv[1], 4)) < 0)
 			return 1;
 
 		/* Address is specified since argc > 1
 		*/
-		addr = simple_strtoul(argv[1], NULL, 16);
+		addr = simple_strtoul(argv[2], NULL, 16);
 		addr += base_address;
 	}
 
@@ -1313,39 +1313,39 @@ static int do_random(struct cmd_tbl *cmdtp, int flag, int argc,
 
 /**************************************************/
 U_BOOT_CMD(
-	md,	3,	1,	do_mem_md,
+	md,	4,	1,	do_mem_md,
 	"memory display",
 	"[.b, .w, .l" HELP_Q "] address [# of objects]"
 );
 
 
 U_BOOT_CMD(
-	mm,	2,	1,	do_mem_mm,
+	mm,	3,	1,	do_mem_mm,
 	"memory modify (auto-incrementing address)",
 	"[.b, .w, .l" HELP_Q "] address"
 );
 
 
 U_BOOT_CMD(
-	nm,	2,	1,	do_mem_nm,
+	nm,	3,	1,	do_mem_nm,
 	"memory modify (constant address)",
 	"[.b, .w, .l" HELP_Q "] address"
 );
 
 U_BOOT_CMD(
-	mw,	4,	1,	do_mem_mw,
+	mw,	5,	1,	do_mem_mw,
 	"memory write (fill)",
 	"[.b, .w, .l" HELP_Q "] address value [count]"
 );
 
 U_BOOT_CMD(
-	cp,	4,	1,	do_mem_cp,
+	cp,	5,	1,	do_mem_cp,
 	"memory copy",
 	"[.b, .w, .l" HELP_Q "] source target count"
 );
 
 U_BOOT_CMD(
-	cmp,	4,	1,	do_mem_cmp,
+	cmp,	5,	1,	do_mem_cmp,
 	"memory compare",
 	"[.b, .w, .l" HELP_Q "] addr1 addr2 count"
 );
