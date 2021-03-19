@@ -16,6 +16,7 @@
 	aliases {
 		spi0="/soc/qspi@11860000";
 		mshc0="/soc/sdio0@10000000";
+		usb0="/soc/usb@104c0000";
 	};
 	cpus: cpus {
 		#address-cells = <1>;
@@ -251,14 +252,6 @@
 			status = "okay";
 		};
 
-		usb3_phy: usb3-phy {
-			compatible = "usb3-phy";
-			status = "okay";
-		};
-		usb2_phy: usb2-phy {
-			compatible = "usb2-phy";
-			status = "okay";
-		};
 		USB30: usb@104c0000 {
 			compatible = "cdns,usb3";
 			reg = <0x0 0x104c0000 0x0 0x10000>,	// memory area for HOST registers
@@ -270,12 +263,9 @@
 			interrupt-names = "otg",
 					"host",
 					"peripheral";
-			phys = <&usb3_phy>, <&usb2_phy>;
 			phy-names = "cdns3,usb3-phy", "cnds3,usb2-phy";
 			status = "okay";
-			/*maximum-speed = "high-speed";
-			dr_mode = "host";*/
-		};
+ 		};
 
 
 		gpio: gpio@11910000 {
@@ -496,7 +486,7 @@
 			clocks = <&dwmmc_biuclk>;
 			clock-names = "biu";
 			clock-frequency = <100000000>;
-			max-frequency = <26000000>;
+			max-frequency = <50000000>;
 			fifo-depth = <32>;
 			card-detect-delay = <300>;
 			fifo-watermark-aligned;

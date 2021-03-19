@@ -59,12 +59,11 @@ int cache_enable_ways(void)
 
 #if CONFIG_IS_ENABLED(SIFIVE_FU540_L2CC_FLUSH)
 #define L2_CACHE_FLUSH64	0x200
+#define L2_CACHE_BASE_ADDR 	0x2010000
 
 void flush_dcache_range(unsigned long start, unsigned long end)
 {
-	fdt_addr_t base;
 	unsigned long line;
-
 	volatile unsigned long *flush64;
 
 	/* make sure the address is in the range */
@@ -74,11 +73,8 @@ void flush_dcache_range(unsigned long start, unsigned long end)
 				CONFIG_SIFIVE_FU540_L2CC_FLUSH_SIZE))
 		return;
 
-	base = l2cc_get_base_addr();
-	if (base == FDT_ADDR_T_NONE)
-		return;
-
-	flush64 = (volatile unsigned long *)(base + L2_CACHE_FLUSH64);
+	/*In order to improve the performance, change base addr to a fixed value*/
+	flush64 = (volatile unsigned long *)(L2_CACHE_BASE_ADDR + L2_CACHE_FLUSH64);
 
 	/* memory barrier */
 	mb();
@@ -88,7 +84,11 @@ void flush_dcache_range(unsigned long start, unsigned long end)
 		mb();
 	}
 
-
 	return;
+}
+
+void invalidate_dcache_range(unsigned long start, unsigned long end)
+{
+	flush_dcache_range(start,end);
 }
 #endif //SIFIVE_FU540_L2CC_FLUSH
