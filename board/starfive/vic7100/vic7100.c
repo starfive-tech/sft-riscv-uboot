@@ -612,6 +612,16 @@ INIT_FUNC_DEF(i2c0)
 
 	_CLEAR_RESET_rstgen_rstn_i2c0_apb_;
 	_CLEAR_RESET_rstgen_rstn_i2c0_core_;
+
+	SET_GPIO_62_dout_LOW;
+	SET_GPIO_61_dout_LOW;
+	SET_GPIO_62_doen_reverse_(1);
+	SET_GPIO_61_doen_reverse_(1);
+
+	SET_GPIO_62_doen_i2c0_pad_sck_oe;
+	SET_GPIO_61_doen_i2c0_pad_sda_oe;
+	SET_GPIO_i2c0_pad_sck_in(62);
+	SET_GPIO_i2c0_pad_sda_in(61);
 }
 
 INIT_FUNC_DEF(i2c1)
@@ -621,6 +631,16 @@ INIT_FUNC_DEF(i2c1)
 
 	_CLEAR_RESET_rstgen_rstn_i2c1_apb_;
 	_CLEAR_RESET_rstgen_rstn_i2c1_core_;
+
+	SET_GPIO_47_dout_LOW;
+	SET_GPIO_48_dout_LOW;
+	SET_GPIO_47_doen_reverse_(1);
+	SET_GPIO_48_doen_reverse_(1);
+
+	SET_GPIO_47_doen_i2c1_pad_sck_oe;
+	SET_GPIO_48_doen_i2c1_pad_sda_oe;
+	SET_GPIO_i2c1_pad_sck_in(47);
+	SET_GPIO_i2c1_pad_sda_in(48);
 }
 
 INIT_FUNC_DEF(trng)
@@ -685,6 +705,16 @@ INIT_FUNC_DEF(i2c2)
 
 	_CLEAR_RESET_rstgen_rstn_i2c2_apb_;
 	_CLEAR_RESET_rstgen_rstn_i2c2_core_;
+
+	SET_GPIO_60_dout_LOW;
+	SET_GPIO_59_dout_LOW;
+	SET_GPIO_60_doen_reverse_(1);
+	SET_GPIO_59_doen_reverse_(1);
+
+	SET_GPIO_60_doen_i2c2_pad_sck_oe;
+	SET_GPIO_59_doen_i2c2_pad_sda_oe;
+	SET_GPIO_i2c2_pad_sck_in(60);
+	SET_GPIO_i2c2_pad_sda_in(59);
 }
 
 INIT_FUNC_DEF(i2c3)
