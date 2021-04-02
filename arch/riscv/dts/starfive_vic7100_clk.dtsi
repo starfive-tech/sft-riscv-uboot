@@ -80,4 +80,9 @@
 		clock-frequency = <100000000>;
 	};
 */
+	pwmclk: pwmclk {
+            #clock-cells = <0>;
+            compatible = "fixed-clock";
+            clock-frequency = <125000000>;
+       };
 };

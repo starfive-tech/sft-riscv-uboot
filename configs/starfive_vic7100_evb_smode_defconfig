@@ -1,10 +1,10 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# U-Boot 2021.01-rc4 Configuration
+# U-Boot 2021.01 Configuration
 #
 
 #
-# Compiler: riscv64-linux-gnu-gcc (GCC) 9.2.1 20190827 (Red Hat Cross 9.2.1-1)
+# Compiler: gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
 #
 CONFIG_CREATE_ARCH_SYMLINK=y
 # CONFIG_ARC is not set
@@ -54,8 +54,8 @@ CONFIG_64BIT=y
 # CONFIG_TARGET_SIFIVE_FU540 is not set
 CONFIG_TARGET_STARFIVE_VIC7100=y
 # CONFIG_TARGET_SIPEED_MAIX is not set
-# CONFIG_VIC_STARLIGHT_V1 is not set
-CONFIG_VIC_EVB_V1=y
+CONFIG_VIC_STARLIGHT_V1=y
+# CONFIG_VIC_EVB_V1 is not set
 CONFIG_SPL_OPENSBI_LOAD_ADDR=0x80000000
 # CONFIG_STARFIVE_VIC7100_BOOTHACK is not set
 CONFIG_SIFIVE_FU540=y

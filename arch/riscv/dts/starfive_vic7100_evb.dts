@@ -277,10 +277,6 @@
 			interrupt-controller;
 			#gpio-cells = <2>;
 		};
-		gpiorst:gpio-restart {
-			compatible = "gpio-restart";
-			gpios = <&gpio 10 1>;
-		};
 		i2c0: i2c@118b0000 {
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -414,10 +410,11 @@
 		};
 
 		ptc: pwm@12490000 {
-			compatible = "sifive,pwm0";
+			compatible = "starfive,pwm0";
 			reg = <0x0 0x12490000 0x0 0x10000>;
 			reg-names = "control";
 			sifive,approx-period = <100000000>;
+			clocks = <&pwmclk>;
 			#pwm-cells=<3>;
 			sifive,npwm = <8>;
 

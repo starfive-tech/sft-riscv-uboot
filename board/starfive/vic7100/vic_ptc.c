@@ -138,6 +138,29 @@ static void ptc_pinmux_init(uint32_t num)
 {
 	uint32_t i = 0;
 
+#if defined(CONFIG_VIC_STARLIGHT_V1)
+        if(num == 0)    /* GPIOB7 */
+	{
+            SET_GPIO_7_dout_pwm_pad_out_bit0;
+            SET_GPIO_7_doen_LOW;
+	    while(0)
+            {
+               for(i=0; i<100; i++)  ;
+                  SET_GPIO_7_dout_HIGH;
+            }
+        }
+        else if(num == 1)
+        { /* GPIOB5 */
+            SET_GPIO_5_dout_pwm_pad_out_bit1;
+	    SET_GPIO_5_doen_LOW;
+	}
+	else if(num == 2)
+	{
+		SET_GPIO_45_dout_pwm_pad_out_bit2;
+		SET_GPIO_45_doen_LOW;
+	}
+
+#else  // defined(VIC_EVB_V1)
     if(num == 0)    /* GPIOB33 */
     {
         SET_GPIO_29_dout_pwm_pad_out_bit0;
@@ -178,6 +201,7 @@ static void ptc_pinmux_init(uint32_t num)
         SET_GPIO_6_dout_pwm_pad_out_bit7;
         SET_GPIO_6_doen_LOW;
     }
+#endif	
 }
 
 /*reset apb clock */
@@ -193,7 +217,7 @@ void ptc_reset()
 	uint32_t num;
 
 	num = 0;
-	//for(num = 0; num < PTC_CAPT_ALL; num++)
+	for(num = 0; num < PTC_CAPT_ALL; num++)
 	{
 		/* set pin mux */
 		ptc_pinmux_init(num);
@@ -203,7 +227,7 @@ void ptc_reset()
 		ptc_set_default_duty(num);
 	}
 
-	//for(num = 0; num < PTC_CAPT_ALL; num++)
+	for(num = 0; num < PTC_CAPT_ALL; num++)
 	{
 		ptc_start(num);
 	}

@@ -889,7 +889,7 @@ int board_hw_init(void)
 	INIT_FUNC_CALL(i2c2);
 	INIT_FUNC_CALL(i2c3);
 	//INIT_FUNC_CALL(wdt);
-	//INIT_FUNC_CALL(ptc);
+	INIT_FUNC_CALL(ptc);
 
 	/** Video Output Subsystem **/
 	INIT_FUNC_CALL(vout_subsys);
