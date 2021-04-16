@@ -911,8 +911,17 @@ int board_hw_init(void)
 
 int board_init(void)
 {
+	int ret;
+
 	gd->bd->bi_arch_number = MACH_TYPE_STARFIVE_VIC7100;
-	gd->bd->bi_boot_params = PHYS_SDRAM_0;
+        gd->bd->bi_boot_params = PHYS_SDRAM_0;
+
+	/* enable all cache ways */
+        ret = cache_enable_ways();
+        if (ret) {
+                debug("%s: could not enable cache ways\n", __func__);
+                return ret;
+        }
 
 	return 0;
 }

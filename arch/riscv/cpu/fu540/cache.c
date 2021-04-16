@@ -47,6 +47,7 @@ int cache_enable_ways(void)
 	config = readl((volatile u32 *)base + L2_CACHE_CONFIG);
 	ways = (config & MASK_NUM_WAYS) >> NUM_WAYS_SHIFT;
 
+	if(ways != 0x10) ways = 0x10;    //0x10 will enable 16-ways of L2 cache
 	enable = (volatile u32 *)(base + L2_CACHE_ENABLE);
 
 	/* memory barrier */
