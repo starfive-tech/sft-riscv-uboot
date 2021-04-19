@@ -1,1 +1,1 @@
-# sft-riscvpi-uboot
+# sft-riscv-uboot
