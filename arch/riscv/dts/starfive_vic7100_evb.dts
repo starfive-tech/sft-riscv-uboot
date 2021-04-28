@@ -522,5 +522,12 @@
 			/*fixed-emmc-driver-type;*/
 			post-power-on-delay-ms = <200>;
 		};
+		sfc_tmp:tmpsensor@124A0000 {
+			compatible = "sfc,tempsensor";
+			reg = <0x0 0x124A0000 0x0 0x1000>;
+			interrupt-parent = <&plic>;
+			interrupts = <122>;
+			status = "okay";
+		};
 	};
 };
