@@ -748,6 +748,19 @@ INIT_FUNC_DEF(ptc)
 	ptc_reset();
 }
 
+INIT_FUNC_DEF(tmp_sensor)
+{
+	_DISABLE_CLOCK_clk_temp_apb_;
+	_ASSERT_RESET_rstgen_rstn_temp_apb_;
+	_DISABLE_CLOCK_clk_temp_sense_;
+	_ASSERT_RESET_rstgen_rstn_temp_sense_;
+
+	_ENABLE_CLOCK_clk_temp_apb_;
+	_CLEAR_RESET_rstgen_rstn_temp_apb_;
+	_ENABLE_CLOCK_clk_temp_sense_;
+	_CLEAR_RESET_rstgen_rstn_temp_sense_;
+}
+
 INIT_FUNC_DEF(vout_subsys)
 {
 	_ENABLE_CLOCK_clk_vout_src_ ;
@@ -890,6 +903,7 @@ int board_hw_init(void)
 	INIT_FUNC_CALL(i2c3);
 	//INIT_FUNC_CALL(wdt);
 	INIT_FUNC_CALL(ptc);
+	INIT_FUNC_CALL(tmp_sensor);
 
 	/** Video Output Subsystem **/
 	INIT_FUNC_CALL(vout_subsys);
