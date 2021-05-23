@@ -3,8 +3,12 @@
 # (C) Copyright 2000 - 2013
 # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
 
-
-WARNING: you probably do NOT want this repo.  The main StarFive u-boot repo is https://github.com/starfive-tech/u-boot
+#######################################################
+# WARNING: you probably do NOT want this repo
+# 
+# The main StarFive u-boot repo is:
+# https://github.com/starfive-tech/u-boot
+#######################################################
 
 
 Summary:
