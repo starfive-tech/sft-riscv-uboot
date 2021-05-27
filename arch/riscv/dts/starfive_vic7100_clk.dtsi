@@ -85,4 +85,9 @@
             compatible = "fixed-clock";
             clock-frequency = <125000000>;
        };
+	spiclk: spiclk {
+	    #clock-cells = <0>;
+            compatible = "fixed-clock";
+            clock-frequency = <50000000>;
+	};
 };
