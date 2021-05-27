@@ -1,5 +1,6 @@
 /dts-v1/;
 #include "starfive_vic7100_clk.dtsi"
+#include <dt-bindings/starfive_fb.h>
 
 / {
 	#address-cells = <2>;
@@ -106,6 +107,16 @@
 		};
 		nvdla_reserved:framebuffer@d0000000{
 			reg = <0x0 0xd0000000 0x0 0x28000000>;
+		};
+		vin_reserved: framebuffer@f9000000 {
+			compatible = "shared-dma-pool";
+			no-map;
+			reg = <0x0 0xf9000000 0x0 0x1000000>;
+		};
+		sffb_reserved: framebuffer@fb000000 {
+			compatible = "shared-dma-pool";
+			no-map;
+			reg = <0x0 0xfb000000 0x0 0x2000000>;
 		};
 	};
 
@@ -285,10 +296,22 @@
 			interrupt-parent = <&plic>;
 			interrupts = <96>;
 			/*clocks = <&hfclk>; */
-			clock-frequency = <1000000>;
+			clock-frequency = <1000000>;  
 			i2c-sda-hold-time-ns = <300>;
-			i2c-sda-falling-time-ns = <500>;
+			i2c-sda-falling-time-ns = <500>; 
 			i2c-scl-falling-time-ns = <500>;
+		
+			scl-gpio = <&gpio 62 0>;
+			sda-gpio = <&gpio 61 0>;
+			tda998x@70 {
+				compatible = "nxp,tda998x";
+				reg = <0x70>;
+			};
+			imx219@10 {
+				compatible = "imx219";
+				reg = <0x10>;
+				reset-gpio = <&gpio 58 0>;
+			};
 		};
 
 		i2c1: i2c@118c0000 {
@@ -317,6 +340,9 @@
 			i2c-sda-hold-time-ns = <300>;
 			i2c-sda-falling-time-ns = <500>;
 			i2c-scl-falling-time-ns = <500>;
+			auto_calc_scl_lhcnt;
+			scl-gpio = <&gpio 18 0>;
+			sda-gpio = <&gpio 19 0>;
 
 			seeed_plane_i2c@45 {
 				compatible = "seeed_panel";
@@ -420,6 +446,13 @@
 
 		};
 
+		sfc_tmp:tmpsensor@124A0000 {
+		compatible = "sfc,tempsensor";
+		reg = <0x0 0x124A0000 0x0 0x1000>;
+		interrupt-parent = <&plic>;
+		interrupts = <122>;
+		status = "okay";
+		};
 		qspi:qspi@11860000 {
 			compatible = "cadence,qspi","cdns,qspi-nor";
 			#address-cells = <1>;
@@ -522,12 +555,88 @@
 			/*fixed-emmc-driver-type;*/
 			post-power-on-delay-ms = <200>;
 		};
-		sfc_tmp:tmpsensor@124A0000 {
-			compatible = "sfc,tempsensor";
-			reg = <0x0 0x124A0000 0x0 0x1000>;
+	
+		sfivefb:sfivefb@12000000 {
+			compatible = "starfive,vpp-lcdc";
 			interrupt-parent = <&plic>;
-			interrupts = <122>;
+			interrupts = <101>, <103>;
+			interrupt-names = "lcdc_irq", "vpp1_irq";
+			reg = <0x0 0x12000000 0x0 0x10000>,
+				<0x0 0x12100000 0x0 0x10000>,
+				<0x0 0x12040000 0x0 0x10000>,
+				<0x0 0x12080000 0x0 0x10000>,
+				<0x0 0x120c0000 0x0 0x10000>,
+				<0x0 0x12240000 0x0 0x10000>,
+				<0x0 0x12250000 0x0 0x10000>,
+				<0x0 0x12260000 0x0 0x10000>;
+			reg-names = "lcdc", "dsitx", "vpp0", "vpp1", "vpp2", "clk", "rst", "sys";
+			memory-region = <&sffb_reserved>;
+			clocks = <&uartclk>, <&apb2clk>;
+			clock-names = "baudclk", "apb_pclk";
 			status = "okay";
+			ddr-format = <WIN_FMT_RGB565>;
+
+			
+			pp1 {
+				pp-id = <1>;
+				fifo-out;
+				src-format = <COLOR_YUV420_NV21>;
+				src-width = <1920>;
+				src-height = <1080>;
+				dst-format = <COLOR_RGB888_ARGB>;
+				dst-width = <1920>;
+				dst-height = <1080>;
+			};
+		};
+		vin_sysctl:vin_sysctl@19800000 {
+			compatible = "starfive,stf-vin";
+			reg = <0x0 0x19800000 0x0 0x10000>,
+				  <0x0 0x19810000 0x0 0x10000>,
+				  <0x0 0x19820000 0x0 0x10000>,
+				  <0x0 0x19830000 0x0 0x10000>,
+				  <0x0 0x19840000 0x0 0x10000>,
+				  <0x0 0x19870000 0x0 0x30000>,
+				  <0x0 0x198a0000 0x0 0x30000>,
+				  <0x0 0x11800000 0x0 0x10000>,
+				  <0x0 0x11840000 0x0 0x10000>,
+				  <0x0 0x11858000 0x0 0x10000>;
+			reg-names = "mipi0", "vclk", "vrst", "mipi1", "sctrl", "isp0", "isp1", "tclk", "trst", "iopad";
+			interrupt-parent = <&plic>;
+			interrupts = <119 109>;
+			memory-region = <&vin_reserved>;
+			/*for imx219 vim&isp*/
+			format = <SRC_CSI2RX_VIN_ISP>;
+			frame-width = <1920>;
+			frame-height =<1080>;
+
+
+			/*defaule config sc2235
+			format = <SRC_DVP_SENSOR_VIN_ISP>;
+			frame-width = <1920>;
+			frame-height =<1080>;
+			isp0_enable;*/
+
+			/*defaule config ov5640	
+			format = <SRC_DVP_SENSOR_VIN_OV5640>;
+			frame-width = <1920>;
+			frame-height =<1080>;*/
+
+			/*defaule config for ov4689 vin&isp
+			format = <SRC_CSI2RX_VIN_ISP>;
+			frame-width = <800>;
+			frame-height =<480>;
+			*/
+			isp0_enable;
+			csi-lane = <2>;
+			csi-dlane-swaps = /bits/ 8 <1>,/bits/ 8 <2>,/bits/ 8 <3>,/bits/ 8 <4>;
+			csi-dlane-pn-swaps  = /bits/ 8 <0>,/bits/ 8 <0>,/bits/ 8 <0>,/bits/ 8 <0>;
+			csi-clane-swap = /bits/ 8 <0>;
+			csi-clane-pn-swap = /bits/ 8 <0>;
+			csi-mipiID = <0>;
+			csi-width = <1920>;
+			csi-height = <1080>;
+			csi-dt = <0x2b>;
 		};
 	};
 };
+#include "tda998x_1080p.dtsi"
