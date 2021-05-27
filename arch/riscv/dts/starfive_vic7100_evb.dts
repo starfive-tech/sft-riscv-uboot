@@ -448,6 +448,23 @@
 				spi-rx-bus-width = <1>;
 			};
 		};
+		spi2:spi2@12410000 {
+			compatible = "snps,dw-apb-ssi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			interrupt-parent = <&plic>;
+			interrupts = <70>;
+			reg = <0x0 0x12410000 0x0 0x10000>;
+			clocks = <&spiclk>;
+			/*num-cs = <1>;
+			cs-gpios = <&gpio 0 0>;*/
+			spi_dev0: spi@0 {
+				compatible = "rohm,dh2228fv";
+				spi-max-frequency = <10000000>;
+				reg = <0>;
+				status = "okay";
+			};
+		};
 		xrp@0 {
 		compatible = "cdns,xrp";
 		reg = <0x0 0xf0000000 0x0 0x01ffffff

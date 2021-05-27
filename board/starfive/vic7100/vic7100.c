@@ -69,6 +69,21 @@ struct sifive_gpio_regs
 	volatile uint32_t  OUT_XOR;     /* 0x0040 */
 };
 
+#define SET_SPI_GPIO_TEST
+
+#ifdef SET_SPI_GPIO_TEST
+#define SET_SPI_GPIO(id,sdo,sdi,sclk,cs) {         \
+	        SET_GPIO_##sdo##_dout_spi##id##_pad_txd;		\
+	        SET_GPIO_##sdo##_doen_LOW;							\
+	        SET_GPIO_spi##id##_pad_rxd(sdi);				\
+	        SET_GPIO_##sdi##_doen_HIGH;							\
+	        SET_GPIO_##sclk##_dout_spi##id##_pad_sck_out;	\
+	        SET_GPIO_##sclk##_doen_LOW;							\
+	        SET_GPIO_##cs##_dout_spi##id##_pad_ss_0_n;		\
+	        SET_GPIO_##cs##_doen_LOW;							\
+	        }
+#endif
+
 #define INIT_FUNC_DEF(name)			\
 	static void _##name##_init(void)
 
@@ -668,6 +683,11 @@ INIT_FUNC_DEF(spi2)
 
 	_CLEAR_RESET_rstgen_rstn_spi2_apb_;
 	_CLEAR_RESET_rstgen_rstn_spi2_core_;
+
+#ifdef SET_SPI_GPIO_TEST
+	/* Modifying the GPIO interface of SPI2 */
+	SET_SPI_GPIO(2,18,16,12,15);
+#endif
 }
 
 INIT_FUNC_DEF(spi3)
