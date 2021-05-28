@@ -296,11 +296,11 @@
 			interrupt-parent = <&plic>;
 			interrupts = <96>;
 			/*clocks = <&hfclk>; */
-			clock-frequency = <1000000>;  
+			clock-frequency = <100000>;
 			i2c-sda-hold-time-ns = <300>;
-			i2c-sda-falling-time-ns = <500>; 
-			i2c-scl-falling-time-ns = <500>;
-		
+			i2c-sda-falling-time-ns = <3000>;
+			i2c-scl-falling-time-ns = <3000>;
+			auto_calc_scl_lhcnt;
 			scl-gpio = <&gpio 62 0>;
 			sda-gpio = <&gpio 61 0>;
 			tda998x@70 {
