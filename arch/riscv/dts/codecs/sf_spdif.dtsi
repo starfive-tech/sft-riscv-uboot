@@ -1,0 +1,14 @@
+&sound {
+	compatible = "simple-audio-card";
+	simple-audio-card,name = "SF-SPDIF-Sound-Card";
+	simple-audio-card,bitclock-master = <&dailink0_master>;
+	simple-audio-card,frame-master = <&dailink0_master>;
+	simple-audio-card,format = "left_j";
+	dailink0_master:simple-audio-card,cpu {
+		sound-dai = <&spdif0>;
+	};
+
+	simple-audio-card,codec {
+		sound-dai = <&spdif_transmitter>;
+	};
+};

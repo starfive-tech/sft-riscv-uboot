@@ -1,0 +1,18 @@
+&sound {
+	compatible = "simple-audio-card";
+	simple-audio-card,format = "i2s";
+	simple-audio-card,name = "sf-ac108-voicecard"; 
+	simple-audio-card,bitclock-master = <&dailink0_master>;
+	simple-audio-card,frame-master = <&dailink0_master>;
+	simple-audio-card,codec-clock-rate = <12288000>;
+	status = "okay";
+	
+	simple-audio-card,cpu {
+		sound-dai = <&i2sadc0>;
+	};
+	dailink0_master:simple-audio-card,codec {
+		sound-dai = <&ac108_a>;
+		clocks = <&ac108_mclk>;
+		clock-names = "mclk";
+	};
+};

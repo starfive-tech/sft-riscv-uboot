@@ -1,0 +1,18 @@
+&sound {
+	compatible = "simple-audio-card";
+	simple-audio-card,format = "i2s";
+	simple-audio-card,name = "SF-VAD-Sound-Card";
+	simple-audio-card,bitclock-master = <&dailink0_master>;
+	simple-audio-card,frame-master = <&dailink0_master>;
+	status = "okay";
+	
+	simple-audio-card,cpu {
+		sound-dai = <&i2svad>;
+	};
+	
+	dailink0_master:simple-audio-card,codec {
+		sound-dai = <&pdm>;
+	};
+};
+
+
