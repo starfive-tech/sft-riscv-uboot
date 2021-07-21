@@ -38,8 +38,7 @@
 #define STARFIVE_AUDIO_AC108	0
 #define STARFIVE_AUDIO_WM8960	0
 #define STARFIVE_AUDIO_VAD		0
-#define STARFIVE_AUDIO_PWMDAC	0
-#define STARFIVE_AUDIO_SPDIF	1
+#define STARFIVE_AUDIO_SPDIF	0
 #define STARFIVE_AUDIO_PDM		0
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -1044,20 +1043,20 @@ int board_ac108_init(void)
 	INIT_FUNC_CALL(i2srx_3ch);
 	INIT_FUNC_CALL(i2svad);
 
-	SET_GPIO_i2srx_bclk_in(45); 	
+	SET_GPIO_i2srx_bclk_in(45);
 	SET_GPIO_45_doen_HIGH;
 	#if 0
-	SET_GPIO_i2srx_lrck_in(6);	 
+	SET_GPIO_i2srx_lrck_in(6);
 	SET_GPIO_6_doen_HIGH;
 	SET_GPIO_i2srx_sdin_bit0(8);
 	SET_GPIO_8_doen_HIGH;
 	#else
-	SET_GPIO_i2srx_lrck_in(3);	 
+	SET_GPIO_i2srx_lrck_in(3);
 	SET_GPIO_3_doen_HIGH;
 	SET_GPIO_i2srx_sdin_bit0(2);
 	SET_GPIO_2_doen_HIGH;
-	#endif 
-	
+	#endif
+
 	INIT_FUNC_CALL(i2sgpiorx);
 }
 
@@ -1067,14 +1066,14 @@ int board_wm8960_init(void)
 	INIT_FUNC_CALL(i2svad);
 	INIT_FUNC_CALL(i2sdac0);
 	//INIT_FUNC_CALL(i2sdac1);
-	
-	SET_GPIO_i2srx_bclk_in(45); 	
+
+	SET_GPIO_i2srx_bclk_in(45);	
 	SET_GPIO_45_doen_HIGH;
-	SET_GPIO_i2srx_lrck_in(3);	 
+	SET_GPIO_i2srx_lrck_in(3);
 	SET_GPIO_3_doen_HIGH;
 	SET_GPIO_i2srx_sdin_bit0(2);
 	SET_GPIO_2_doen_HIGH;
-	
+
 	INIT_FUNC_CALL(i2sgpiorx);
 }
 
@@ -1091,7 +1090,6 @@ int board_pwmdac_init(void)
 
 int board_spdif_init(void)
 {
-	//INIT_FUNC_CALL(i2svad);
 	INIT_FUNC_CALL(spdif);
 }
 
@@ -1116,7 +1114,7 @@ int board_audio_init(void)
 	#elif STARFIVE_AUDIO_PDM
 	board_pdm_init();
 	#endif
-	
+
 	board_pwmdac_init();
 }
 
@@ -1138,7 +1136,7 @@ int board_hw_init(void)
 	INIT_FUNC_CALL(audio_subsys);
 
 	board_audio_init();
-	
+
 	INIT_FUNC_CALL(usb);
 	INIT_FUNC_CALL(sgdma1p);
 	//INIT_FUNC_CALL(qspi);

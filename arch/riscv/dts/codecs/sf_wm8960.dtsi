@@ -1,18 +1,19 @@
 &sound{
-		compatible = "simple-audio-card";
-		simple-audio-card,format = "i2s";
-		simple-audio-card,name = "seeed-2mic-voicecard"; 
-		simple-audio-card,bitclock-master = <&dailink0_master>;
-		simple-audio-card,frame-master = <&dailink0_master>;
-		simple-audio-card,codec-clock-rate = <12288000>;
+	/* i2s + wm8960 */
+	simple-audio-card,dai-link@1 {
+		reg = <1>;
 		status = "okay";
-		simple-audio-card,widgets =
+		format = "i2s";
+		bitclock-master = <&sndcodec1>;
+		frame-master = <&sndcodec1>;
+		
+		widgets =
 				"Microphone", "Mic Jack",
 				"Line", "Line In",
 				"Line", "Line Out",
 				"Speaker", "Speaker",
 				"Headphone", "Headphone Jack";
-		simple-audio-card,routing =
+		routing =
 				"Headphone Jack", "HP_L",
 				"Headphone Jack", "HP_R",
 				"Speaker", "SPK_LP",
@@ -21,16 +22,17 @@
 				"LINPUT3", "Mic Jack",
 				"RINPUT1", "Mic Jack",
 				"RINPUT2", "Mic Jack";
-		simple-audio-card,cpu0 {
-                sound-dai = <&i2sdac0>;
-            };
-            cpu1 {
-                sound-dai = <&i2sadc0>;
-            };
-
-		dailink0_master:simple-audio-card,codec {
+		cpu0 {
+			sound-dai = <&i2sdac0>;
+		};
+		cpu1 {
+			sound-dai = <&i2sadc0>;
+		};
+		
+		sndcodec1:codec {
 			sound-dai = <&wm8960>;
 			clocks = <&wm8960_mclk>;
 			clock-names = "mclk";
 		};
-    };
+	};
+};
